@@ -2,6 +2,10 @@
 ### Hub de Datos de Migración de Tránsito Andina · Andean Transit Migration Data Hub
 Corredor andino central · Bolivia y Perú · 12 nodos de tránsito · 13 municipios
 
+### ▶ Tablero en vivo: **https://bookcubers2-ux.github.io/andean-transit-migration-data-hub/**
+
+> Los datos publicados en ese enlace son **sintéticos**, generados para poder mostrar el sistema completo antes de cargar los datos reales. El tablero lo declara en una franja permanente. **Ningún dato personal de ninguna persona migrante está publicado en internet, ni lo estará:** el pipeline de R corre en una máquina local, las capas L0 a L2 están excluidas del repositorio por `.gitignore`, y lo único que cruza la frontera de exportación son celdas agregadas que pasaron la compuerta k=10.
+
 ---
 
 ## Ver el tablero ahora mismo
