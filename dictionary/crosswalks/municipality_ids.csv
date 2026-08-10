@@ -1,0 +1,14 @@
+mun_id,node_id,country_iso3,adm1_name,mun_name,mun_name_short,national_code,code_source,code_status,is_border_post,corridor_segment,lat,lon,pop_baseline,notes
+PE-211101,ND-JULIACA,PER,Puno,Juliaca (San Roman),Juliaca,211101,INEI UBIGEO,verified,FALSE,S1_PUNO,-15.4997,-70.1333,276110,Nodo de concentracion y redistribucion. Entrada del corredor desde el norte.
+PE-210101,ND-PUNO,PER,Puno,Puno,Puno,210101,INEI UBIGEO,verified,FALSE,S1_PUNO,-15.8402,-70.0219,128637,Capital regional. Terminal terrestre principal.
+PE-211301,ND-YUNGUYO,PER,Puno,Yunguyo,Yunguyo,211301,INEI UBIGEO,needs_review,TRUE,S1_PUNO,-16.2456,-69.0917,25000,Paso fronterizo secundario hacia Copacabana. Confirmar distrito capital.
+PE-210402,ND-DESAGUADERO,PER,Puno,Desaguadero (Chucuito),Desaguadero PE,210402,INEI UBIGEO,needs_review,TRUE,S1_PUNO,-16.5656,-69.0406,29000,Lado peruano del nodo binacional. Confirmar codigo de distrito en Chucuito.
+BO-020804,ND-DESAGUADERO,BOL,La Paz,Desaguadero (Ingavi),Desaguadero BO,020804,INE Bolivia,needs_review,TRUE,S2_FRONTERA,-16.5667,-69.0333,6000,Lado boliviano del mismo puente. Confirmar numero de municipio en provincia Ingavi.
+BO-021701,ND-COPACABANA,BOL,La Paz,Copacabana (Manco Kapac),Copacabana,021701,INE Bolivia,needs_review,TRUE,S2_FRONTERA,-16.1667,-69.0833,15000,Paso por Kasani. Confirmar numero de municipio en provincia Manco Kapac.
+BO-020105,ND-EL-ALTO,BOL,La Paz,El Alto (Murillo),El Alto,020105,INE Bolivia,verified,FALSE,S3_TRONCAL,-16.5039,-68.1633,943558,Primer nodo urbano mayor. Mercado laboral informal de absorcion rapida.
+BO-040101,ND-ORURO,BOL,Oruro,Oruro (Cercado),Oruro,040101,INE Bolivia,verified,FALSE,S3_TRONCAL,-17.9833,-67.1500,264683,Bifurcacion del corredor hacia Pisiga y hacia el sur.
+BO-070101,ND-SANTA-CRUZ,BOL,Santa Cruz,Santa Cruz de la Sierra (Andres Ibanez),Santa Cruz,070101,INE Bolivia,verified,FALSE,S3_TRONCAL,-17.7833,-63.1821,1722480,Destino final declarado mas frecuente. Mayor capacidad de absorcion del corredor.
+BO-040901,ND-PISIGA,BOL,Oruro,Sabaya (Pisiga),Pisiga,040901,INE Bolivia,needs_review,TRUE,S4_SALIDAS,-19.2000,-68.6167,5000,Salida hacia Chile por Colchane. Confirmar provincia y numero de municipio.
+BO-051201,ND-VILLAZON,BOL,Potosi,Villazon (Modesto Omiste),Villazon,051201,INE Bolivia,needs_review,TRUE,S4_SALIDAS,-22.0864,-65.5936,42000,Salida hacia Argentina por La Quiaca. Confirmar numero de provincia y municipio.
+BO-060301,ND-YACUIBA,BOL,Tarija,Yacuiba (Gran Chaco),Yacuiba,060301,INE Bolivia,needs_review,TRUE,S4_SALIDAS,-22.0139,-63.6775,105000,Salida hacia Argentina por Pocitos. Confirmar numero de municipio en Gran Chaco.
+PE-230101,ND-TACNA,PER,Tacna,Tacna,Tacna,230101,INEI UBIGEO,verified,TRUE,S4_SALIDAS,-18.0146,-70.2536,286240,Salida peruana hacia Chile por Santa Rosa. Rama occidental del corredor.

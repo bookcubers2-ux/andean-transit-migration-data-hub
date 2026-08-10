@@ -1,0 +1,19 @@
+occ_local_code,occ_local_label,occ_isco2,occ_isco2_label_es,isic1,crosswalk_confidence,note
+5211,Vendedor de puesto de mercado,52,Vendedores,G,exact,
+5212,Vendedor ambulante,52,Vendedores,G,exact,Categoria mas frecuente del corredor.
+5120,Cocinero,51,Trabajadores de servicios personales,I,exact,
+5131,Mesero,51,Trabajadores de servicios personales,I,exact,
+9112,Limpieza en oficinas y hoteles,91,Limpiadores y asistentes,N,exact,
+9111,Trabajo domestico en hogar,91,Limpiadores y asistentes,T,exact,Se separa del anterior por seccion CIIU. El trabajo en hogares tiene otro regimen legal.
+9313,Peon de construccion,93,Peones de la mineria y la construccion,F,exact,
+7115,Carpintero de obra,71,Oficiales y operarios de la construccion,F,exact,
+7126,Plomero,71,Oficiales y operarios de la construccion,F,exact,
+8322,Conductor de taxi o minibus,83,Conductores de vehiculos,H,exact,
+9333,Cargador o estibador,93,Peones de la mineria y la construccion,H,exact,
+9211,Peon agropecuario,92,Peones agropecuarios,A,exact,
+7531,Costurero o sastre,75,Operarios de alimentos y textiles,C,exact,
+5230,Cajero,52,Vendedores,G,exact,
+3322,Comisionista o intermediario comercial,33,Profesionales de nivel medio,G,approximate,La frontera entre comisionista y vendedor por cuenta propia es porosa en el registro municipal.
+5414,Vigilante o guardia,54,Personal de proteccion,N,exact,
+9629,Reciclador,96,Recolectores de desechos,OTH,approximate,Frecuentemente sin registro. Subrepresentado.
+6XXX,Cambista de moneda en frontera,52,Vendedores,G,contested,DISPUTADO. Bolivia lo registra como comercio y Peru como servicio financiero informal. Las celdas construidas sobre este mapeo se marcan.

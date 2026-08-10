@@ -1,0 +1,33 @@
+# =====================================================================
+# ATMDH / OAMT
+# Lo que NUNCA se versiona. Esta lista es parte del control de
+# divulgacion, no una conveniencia de desarrollo.
+# =====================================================================
+
+# Capas con datos personales. Viven en un contenedor cifrado, fuera de
+# cualquier repositorio, y se purgan segun la politica de retencion.
+data/00_raw/
+data/01_staging/
+data/02_canonical/
+
+# Sales de seudonimizacion. Cada municipio custodia la suya.
+# Si esto se filtra, la clave de episodio deja de proteger a nadie.
+.atmdh_salts.csv
+*salts*.csv
+
+# Historial de supresion: es metadato operativo, no publicable.
+data/03_cubes/suppression_history.csv
+
+# Reportes de validacion (traen numeros de fila de registros reales)
+reports/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+renv/library/
+
+# Sistema
+.DS_Store
+Thumbs.db
+node_modules/

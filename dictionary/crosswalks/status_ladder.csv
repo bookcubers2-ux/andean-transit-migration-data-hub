@@ -1,0 +1,15 @@
+country_iso3,status_local_label,status_local_code,status_rank,canonical_code,crosswalk_confidence,legal_note
+BOL,Sin registro migratorio,,1,undocumented,exact,Persona sin actuacion registrada ante la autoridad migratoria.
+BOL,Tramite de permanencia en curso,TRAM,2,in_process,exact,Solicitud presentada sin resolucion firme.
+BOL,Permanencia transitoria,PT,3,transit_permit,exact,Estadia corta autorizada. No habilita trabajo por si sola.
+BOL,Permanencia temporal 1 anio,PTEMP1,4,temporary_stay,exact,Renovable. Base de la mayoria de los casos regularizados del corredor.
+BOL,Permanencia temporal con autorizacion laboral,PTEMP-L,5,work_authorised,approximate,La habilitacion laboral depende del tipo de visa de origen. Revisar caso por caso.
+BOL,Permanencia indefinida,PIND,6,permanent,exact,
+BOL,Naturalizacion,NAT,6,permanent,approximate,Se agrupa con permanencia indefinida para evitar celdas de tamano 1 o 2.
+PER,Sin calidad migratoria vigente,,1,undocumented,exact,
+PER,Tramite ante Migraciones en curso,TRAM,2,in_process,exact,
+PER,Calidad migratoria temporal,CMT,3,transit_permit,approximate,Cubre varias figuras de corta duracion. Agrupacion editorial.
+PER,Carne de Permiso Temporal de Permanencia,CPP,4,temporary_stay,contested,DISPUTADO. El CPP no es equivalente exacto a la permanencia temporal boliviana en cuanto a derechos laborales. Las celdas construidas sobre este mapeo se marcan en el tablero.
+PER,Carne de extranjeria con calidad de trabajador,CE-TRAB,5,work_authorised,exact,
+PER,Residencia permanente,RP,6,permanent,exact,
+PER,Naturalizacion,NAT,6,permanent,approximate,

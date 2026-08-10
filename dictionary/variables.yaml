@@ -1,0 +1,460 @@
+# =====================================================================
+# ATMDH / OAMT  ·  DICCIONARIO DE VARIABLES  ·  VARIABLE DICTIONARY
+# Hub de Datos de Migracion de Transito Andina
+# =====================================================================
+# FUENTE UNICA DE VERDAD / SINGLE SOURCE OF TRUTH.
+#
+# Este archivo genera, en una sola pasada:
+#   1. las reglas de validacion de R      (R/03_validate.R lo lee, no las codifica)
+#   2. el XLSForm, la plantilla .xlsx bloqueada y el formulario en papel
+#   3. las etiquetas bilingues del tablero (dashboard/i18n.js)
+#   4. el codebook impreso ES/EN
+#
+# NUNCA se agrega una variable en el codigo. Se agrega aqui.
+# ---------------------------------------------------------------------
+meta:
+  schema_version: "2.0.0"
+  updated: "2026-08-10"
+  languages: [es, en]
+  default_language: es
+  minimum_temporal_unit: month
+  minimum_geography: municipality
+  max_published_axes: 2          # tope de dimensionalidad (ver disclosure)
+
+# ---------------------------------------------------------------------
+# CLASIFICACION DE SENSIBILIDAD
+# layer_max = capa mas alta a la que la variable puede llegar.
+#   L1 staging | L2 canonico | L3 cubos | L4 publicacion
+# Una variable con layer_max L2 NUNCA puede aparecer en un cubo.
+# El test tests/testthat/test-disclosure.R lo verifica y bloquea el build.
+# ---------------------------------------------------------------------
+sensitivity_levels:
+  direct_identifier:   { layer_max: L1, note_es: "Identificador directo. Se destruye al pasar a L2.", note_en: "Direct identifier. Destroyed on promotion to L2." }
+  quasi_identifier:    { layer_max: L3, note_es: "Cuasi-identificador. Solo publicable agregado y con k>=10.", note_en: "Quasi-identifier. Publishable only aggregated at k>=10." }
+  sensitive_special:   { layer_max: L2, note_es: "Categoria especial (salud, etnia, situacion migratoria individual). No sale de L2.", note_en: "Special category. Never leaves L2." }
+  free_text:           { layer_max: L2, note_es: "Texto libre. Nunca se publica.", note_en: "Free text. Never published." }
+  non_personal:        { layer_max: L4, note_es: "Dato no personal.", note_en: "Non-personal datum." }
+
+# ---------------------------------------------------------------------
+# TABLAS
+# ---------------------------------------------------------------------
+tables:
+
+  # ===================================================================
+  dim_municipality:
+    grain_es: "Un municipio del corredor"
+    grain_en: "One corridor municipality"
+    label_es: "Municipios"
+    label_en: "Municipalities"
+    variables:
+      - name: mun_id
+        type: character
+        label_es: "ID canonico de municipio"
+        label_en: "Canonical municipality ID"
+        sensitivity: non_personal
+        pattern: "^(BO|PE)-[0-9]{6}$"
+        rules: [{ id: E001, tier: E, test: "matches_pattern", msg_es: "mun_id invalido. Formato: BO-020804 o PE-210402.", msg_en: "Invalid mun_id. Format: BO-020804 or PE-210402." }]
+      - name: country_iso3
+        type: enum
+        codelist: country
+        sensitivity: non_personal
+      - name: adm1_name
+        type: character
+        label_es: "Departamento / Region"
+        label_en: "Department / Region"
+        sensitivity: non_personal
+      - name: mun_name
+        type: character
+        sensitivity: non_personal
+      - name: national_code
+        type: character
+        label_es: "Codigo nacional (INE Bolivia / UBIGEO INEI Peru)"
+        label_en: "National code (INE Bolivia / INEI UBIGEO Peru)"
+        sensitivity: non_personal
+      - name: code_status
+        type: enum
+        codelist: code_status
+        label_es: "Estado de verificacion del codigo"
+        label_en: "Code verification status"
+        sensitivity: non_personal
+        rules: [{ id: W001, tier: W, test: "value != 'verified'", msg_es: "Codigo nacional sin verificar contra el catalogo oficial.", msg_en: "National code not yet verified against the official catalogue." }]
+      - name: is_border_post
+        type: logical
+        sensitivity: non_personal
+      - name: corridor_segment
+        type: enum
+        codelist: corridor_segment
+        sensitivity: non_personal
+      - name: lat
+        type: numeric
+        min: -23.5
+        max: -14.0
+        sensitivity: non_personal
+      - name: lon
+        type: numeric
+        min: -71.5
+        max: -62.0
+        sensitivity: non_personal
+      - name: pop_baseline
+        type: integer
+        label_es: "Poblacion base (censo mas reciente)"
+        label_en: "Baseline population (most recent census)"
+        sensitivity: non_personal
+
+  # ===================================================================
+  fact_transit_event:
+    grain_es: "Una observacion de un episodio seudonimo en un nodo, en una fecha"
+    grain_en: "One observation of a pseudonymous episode at one node, on one date"
+    label_es: "Eventos de transito"
+    label_en: "Transit events"
+    variables:
+      - name: event_id
+        type: character
+        generated: true
+        sensitivity: non_personal
+      - name: episode_key
+        type: character
+        label_es: "Clave de episodio (HMAC truncado, sal por municipio)"
+        label_en: "Episode key (truncated HMAC, per-municipality salt)"
+        sensitivity: quasi_identifier
+        layer_max_override: L2      # NUNCA sale de L2. Solo deduplica dentro del municipio.
+        pattern: "^[a-f0-9]{16}$"
+        rules: [{ id: E010, tier: E, test: "matches_pattern", msg_es: "episode_key mal formada.", msg_en: "Malformed episode_key." }]
+      - name: mun_id
+        type: fk
+        references: dim_municipality.mun_id
+        sensitivity: quasi_identifier
+        rules: [{ id: E011, tier: E, test: "fk_exists", msg_es: "Municipio desconocido. Revise la lista de 12.", msg_en: "Unknown municipality. Check the list of 12." }]
+      - name: obs_date
+        type: date
+        sensitivity: quasi_identifier
+        min: "2022-01-01"
+        max: "@release_date"
+        rules:
+          - { id: E012, tier: E, test: "not_future", msg_es: "Fecha futura. Corrija el dia de la entrevista.", msg_en: "Future date. Fix the interview day." }
+          - { id: E013, tier: E, test: "in_range", msg_es: "Fecha fuera del periodo del proyecto (desde 2022-01-01).", msg_en: "Date outside project window (from 2022-01-01)." }
+      - name: obs_period
+        type: character
+        generated: true
+        derivation: "format(obs_date, '%Y-M%m')"
+        label_es: "Periodo (mes). Unidad temporal minima publicable."
+        label_en: "Period (month). Minimum publishable temporal unit."
+        sensitivity: non_personal
+      - name: node_type
+        type: enum
+        codelist: node_type
+        sensitivity: quasi_identifier
+      - name: direction
+        type: enum
+        codelist: direction
+        sensitivity: quasi_identifier
+      - name: origin_mun_id
+        type: character
+        label_es: "Municipio anterior declarado (o EXT-XXX si esta fuera del corredor)"
+        label_en: "Self-reported previous municipality (or EXT-XXX if outside the corridor)"
+        sensitivity: quasi_identifier
+        pattern: "^((BO|PE)-[0-9]{6}|EXT-[A-Z]{3}|UNK)$"
+      - name: intended_dest_id
+        type: character
+        label_es: "Municipio siguiente declarado. Base de las matrices origen-destino."
+        label_en: "Self-reported next municipality. Basis of the OD matrices."
+        sensitivity: quasi_identifier
+        pattern: "^((BO|PE)-[0-9]{6}|EXT-[A-Z]{3}|UNK)$"
+      - name: nat_iso3
+        type: fk
+        references: dim_nationality.nat_iso3
+        sensitivity: quasi_identifier
+        rules: [{ id: W010, tier: W, test: "rare_category", threshold: 30, msg_es: "Nacionalidad con menos de 30 registros en todo el corredor. Se colapsara a OTH.", msg_en: "Nationality with fewer than 30 corridor-wide records. Will collapse to OTH." }]
+      - name: age_band
+        type: enum
+        codelist: age_band
+        label_es: "Rango de edad (5 anios). La fecha exacta de nacimiento NUNCA se registra."
+        label_en: "Age band (5-year). Exact date of birth is NEVER recorded."
+        sensitivity: quasi_identifier
+        required: true
+        rules: [{ id: E014, tier: E, test: "not_missing", msg_es: "Falta el rango de edad. Es obligatorio.", msg_en: "Age band missing. It is mandatory." }]
+      - name: sex
+        type: enum
+        codelist: sex
+        sensitivity: quasi_identifier
+        required: true
+      - name: travel_group_size
+        type: integer
+        min: 1
+        max: 30
+        sensitivity: quasi_identifier
+        rules: [{ id: W011, tier: W, test: "gt", threshold: 12, msg_es: "Grupo de viaje mayor a 12 personas. Confirme el dato.", msg_en: "Travel group larger than 12. Confirm the figure." }]
+      - name: has_children_in_group
+        type: logical
+        sensitivity: quasi_identifier
+      - name: status_rank
+        type: fk
+        references: dim_status.status_rank
+        sensitivity: sensitive_special
+        note_es: "Situacion migratoria individual. Categoria especial: no sale de L2 sin agregar."
+        note_en: "Individual migratory status. Special category: does not leave L2 unaggregated."
+      - name: enforcement_context
+        type: enum
+        codelist: enforcement_context
+        label_es: "Contexto de control. COVARIABLE CRITICA: separa deteccion de flujo real."
+        label_en: "Enforcement context. CRITICAL COVARIATE: separates detection from actual flow."
+        sensitivity: non_personal
+        required: true
+      - name: source_id
+        type: fk
+        references: dim_source.source_id
+        sensitivity: non_personal
+
+  # ===================================================================
+  fact_labour_spell:
+    grain_es: "Un episodio por una observacion de medio de vida"
+    grain_en: "One episode by one livelihood observation"
+    label_es: "Insercion laboral"
+    label_en: "Labour spells"
+    variables:
+      - name: spell_id
+        type: character
+        generated: true
+        sensitivity: non_personal
+      - name: episode_key
+        type: character
+        sensitivity: quasi_identifier
+        layer_max_override: L2
+      - name: mun_id
+        type: fk
+        references: dim_municipality.mun_id
+        sensitivity: quasi_identifier
+      - name: obs_period
+        type: character
+        sensitivity: non_personal
+      - name: occ_isco2
+        type: fk
+        references: dim_occupation.occ_isco2
+        label_es: "Ocupacion CIUO-08 a 2 digitos (canonica)"
+        label_en: "Occupation ISCO-08 2-digit (canonical)"
+        sensitivity: quasi_identifier
+      - name: occ_local_code
+        type: character
+        label_es: "Codigo local de ocupacion (COB Bolivia / CIUO adaptado Peru)"
+        label_en: "Local occupation code (COB Bolivia / adapted ISCO Peru)"
+        sensitivity: quasi_identifier
+        layer_max_override: L2
+      - name: occ_verbatim
+        type: character
+        label_es: "Ocupacion tal como la declaro la persona"
+        label_en: "Occupation as stated by the respondent"
+        sensitivity: free_text
+      - name: crosswalk_confidence
+        type: enum
+        codelist: crosswalk_confidence
+        sensitivity: non_personal
+        rules: [{ id: W020, tier: W, test: "value == 'contested'", msg_es: "Mapeo ocupacional en disputa. La celda se marcara en el tablero.", msg_en: "Contested occupational mapping. The cell will be flagged in the dashboard." }]
+      - name: isic1
+        type: enum
+        codelist: isic1
+        label_es: "Seccion CIIU Rev.4"
+        label_en: "ISIC Rev.4 section"
+        sensitivity: quasi_identifier
+      - name: formality
+        type: enum
+        codelist: formality
+        sensitivity: quasi_identifier
+      - name: hours_band
+        type: enum
+        codelist: hours_band
+        sensitivity: quasi_identifier
+      - name: earnings_band_smn
+        type: enum
+        codelist: earnings_band_smn
+        label_es: "Ingreso en multiplos del salario minimo nacional. NUNCA montos absolutos."
+        label_en: "Earnings as multiples of the national minimum wage. NEVER absolute amounts."
+        sensitivity: quasi_identifier
+      - name: days_to_first_income
+        type: integer
+        min: 0
+        max: 730
+        label_es: "Dias desde la llegada hasta el primer ingreso pagado. VARIABLE DE ABSORCION."
+        label_en: "Days from arrival to first paid income. THE ABSORPTION VARIABLE."
+        sensitivity: quasi_identifier
+        rules: [{ id: W021, tier: W, test: "gt", threshold: 365, msg_es: "Mas de 365 dias sin ingreso. Confirme el dato.", msg_en: "More than 365 days without income. Confirm the figure." }]
+      - name: absorbed_60d
+        type: logical
+        generated: true
+        derivation: "days_to_first_income <= 60"
+        label_es: "Absorbido en 60 dias"
+        label_en: "Absorbed within 60 days"
+        sensitivity: quasi_identifier
+      - name: job_search_channel
+        type: enum
+        codelist: job_search_channel
+        sensitivity: quasi_identifier
+      - name: has_work_permit
+        type: logical
+        sensitivity: sensitive_special
+      - name: wage_theft_reported
+        type: logical
+        label_es: "Reporto impago o retencion de salario"
+        label_en: "Reported unpaid or withheld wages"
+        sensitivity: quasi_identifier
+      - name: employer_hash
+        type: character
+        label_es: "Hash del empleador. Solo para la regla de dominancia. Nunca se publica el nombre."
+        label_en: "Employer hash. Used only for the dominance rule. The name is never published."
+        sensitivity: quasi_identifier
+        layer_max_override: L2
+      - name: source_id
+        type: fk
+        references: dim_source.source_id
+        sensitivity: non_personal
+
+  # ===================================================================
+  fact_labour_demand:
+    grain_es: "Municipio x mes x seccion CIIU. NO es dato personal."
+    grain_en: "Municipality x month x ISIC section. Not personal data at all."
+    label_es: "Demanda laboral registrada"
+    label_en: "Recorded labour demand"
+    status_es: "PENDIENTE. La primera cosecha 2026Q3 es solo de flujo. Ver model_card.md."
+    status_en: "PENDING. The 2026Q3 first vintage is flow-only. See model_card.md."
+    variables:
+      - { name: mun_id, type: fk, references: dim_municipality.mun_id, sensitivity: non_personal }
+      - { name: obs_period, type: character, sensitivity: non_personal }
+      - { name: isic1, type: enum, codelist: isic1, sensitivity: non_personal }
+      - { name: new_work_permits, type: integer, min: 0, sensitivity: non_personal }
+      - { name: market_stall_registrations, type: integer, min: 0, sensitivity: non_personal }
+      - { name: formal_hire_notifications, type: integer, min: 0, sensitivity: non_personal }
+      - { name: public_works_vacancies, type: integer, min: 0, sensitivity: non_personal }
+      - { name: source_id, type: fk, references: dim_source.source_id, sensitivity: non_personal }
+
+  # ===================================================================
+  fact_survey_response:
+    grain_es: "Un cuestionario aplicado"
+    grain_en: "One administered questionnaire"
+    label_es: "Cuestionarios"
+    label_en: "Survey responses"
+    variables:
+      - { name: response_id, type: character, generated: true, sensitivity: non_personal }
+      - { name: mun_id, type: fk, references: dim_municipality.mun_id, sensitivity: quasi_identifier }
+      - { name: obs_date, type: date, sensitivity: quasi_identifier }
+      - name: consent_version
+        type: character
+        required: true
+        label_es: "Version del consentimiento informado firmado"
+        label_en: "Version of the informed consent signed"
+        sensitivity: non_personal
+        rules: [{ id: E030, tier: E, test: "not_missing", msg_es: "SIN CONSENTIMIENTO REGISTRADO. El registro se rechaza. No se negocia.", msg_en: "NO CONSENT RECORDED. Record rejected. Non-negotiable." }]
+      - { name: consent_mode, type: enum, codelist: consent_mode, required: true, sensitivity: non_personal }
+      - { name: interviewer_id, type: character, sensitivity: quasi_identifier, layer_max_override: L2 }
+      - { name: duration_min, type: integer, min: 3, max: 180, sensitivity: non_personal }
+      - name: refusal_flags
+        type: character
+        label_es: "Modulos que la persona declino responder. El rechazo es un dato, no un error."
+        label_en: "Modules the respondent declined. Refusal is data, not an error."
+        sensitivity: non_personal
+      - { name: source_id, type: fk, references: dim_source.source_id, sensitivity: non_personal }
+
+  # ===================================================================
+  fact_admin_aggregate:
+    grain_es: "Un total ya publicado por la fuente. Se mantiene SEPARADO de los conteos derivados de microdatos."
+    grain_en: "A total already published by the source. Kept SEPARATE from microdata-derived counts."
+    label_es: "Agregados administrativos"
+    label_en: "Administrative aggregates"
+    variables:
+      - { name: mun_id, type: fk, references: dim_municipality.mun_id, sensitivity: non_personal }
+      - { name: obs_period, type: character, sensitivity: non_personal }
+      - { name: indicator, type: character, sensitivity: non_personal }
+      - { name: value, type: numeric, sensitivity: non_personal }
+      - { name: unit, type: character, sensitivity: non_personal }
+      - { name: source_id, type: fk, references: dim_source.source_id, sensitivity: non_personal }
+
+  # ===================================================================
+  dim_source:
+    label_es: "Fuentes"
+    label_en: "Sources"
+    variables:
+      - { name: source_id, type: character, sensitivity: non_personal }
+      - { name: publisher, type: character, sensitivity: non_personal }
+      - { name: source_kind, type: enum, codelist: source_kind, sensitivity: non_personal }
+      - { name: legal_basis, type: character, sensitivity: non_personal }
+      - { name: access_date, type: date, sensitivity: non_personal }
+      - name: coverage_caveat_es
+        type: character
+        label_es: "Advertencia de cobertura, mostrada junto a todo dato de esta fuente"
+        label_en: "Coverage caveat, displayed alongside every datum from this source"
+        sensitivity: non_personal
+      - { name: coverage_caveat_en, type: character, sensitivity: non_personal }
+
+# ---------------------------------------------------------------------
+# REGLAS DE PLAUSIBILIDAD (nivel municipio-mes, no nivel fila)
+# ---------------------------------------------------------------------
+plausibility_rules:
+  - id: P001
+    scope: mun_period
+    test: "abs(log(n / lag(n))) > log(3)"
+    msg_es: "El conteo del mes cambio mas de 3 veces respecto al mes anterior. Revise si hubo un operativo."
+    msg_en: "Monthly count changed by more than 3x versus the previous month. Check for an enforcement operation."
+  - id: P002
+    scope: mun_period
+    test: "n == 0 & lag_nonzero_months >= 3"
+    msg_es: "El municipio reporta cero tras 3 meses con datos. Probable falla de recoleccion, no ausencia de flujo."
+    msg_en: "Municipality reports zero after 3 non-zero months. Likely a collection failure, not an absence of flow."
+  - id: P003
+    scope: mun_period
+    test: "share_female < 0.2 | share_female > 0.8"
+    msg_es: "Razon de sexo fuera del rango 20-80%. Verifique el muestreo."
+    msg_en: "Sex ratio outside the 20-80% range. Check the sampling."
+  - id: P004
+    scope: labour_cell
+    test: "top_employer_share > 0.60"
+    msg_es: "Un solo empleador concentra mas del 60% de la celda. Se aplicara supresion por dominancia."
+    msg_en: "A single employer accounts for more than 60% of the cell. Dominance suppression will apply."
+
+# ---------------------------------------------------------------------
+# CONTROL DE DIVULGACION  (constraint 3, ejecutable)
+# ---------------------------------------------------------------------
+disclosure:
+  builds: [public]                 # decision de Carlos, 2026-08-10: un solo build publico
+  k_anonymity: 10                  # k = 10 en todas partes
+  rounding_base: 5
+  dominance_p_rule: 0.60
+  min_geography: municipality
+  min_period: month
+  max_axes: 2
+  secondary_suppression: true      # supresion complementaria contra recuperacion por margenes
+  release_consistent_suppression: true   # contra ataques por diferencia entre vintages
+  never_publish:
+    - document_number
+    - exact_dob
+    - address
+    - gps_point
+    - photo
+    - biometric
+    - employer_name
+    - occ_verbatim
+    - interviewer_id
+    - episode_key
+  suppression_marker: "n<10"
+  enforcement:
+    test_file: tests/testthat/test-disclosure.R
+    behaviour_es: "Si una sola celda de L4 incumple, el export falla y no hay release."
+    behaviour_en: "If a single L4 cell violates, the export fails and there is no release."
+
+# ---------------------------------------------------------------------
+# VINCULACION DE PERSONAS  (decision de arquitectura, confirmada 2026-08-10)
+# ---------------------------------------------------------------------
+linkage:
+  cross_municipal_person_key: false
+  rationale_es: >
+    Una clave que siga a una persona de Desaguadero a Santa Cruz es, en la
+    practica, un sistema de rastreo, y si existe alguien con placa terminara
+    pidiendola. El movimiento del corredor se reconstruye con origin_mun_id e
+    intended_dest_id a nivel agregado. Se pierde precision analitica. Se gana
+    una herramienta que no puede usarse contra las personas que cuenta.
+  rationale_en: >
+    A key that follows a person from Desaguadero to Santa Cruz is functionally a
+    tracking system, and if it exists someone with a badge will eventually ask
+    for it. Corridor movement is reconstructed from origin_mun_id and
+    intended_dest_id at the aggregate level. Analytical precision is lost. What
+    is gained is a tool that cannot be used against the people it counts.
+  salt_scope: per_municipality
+  longitudinal_followup: within_municipality_only
+  consent_per_wave: true

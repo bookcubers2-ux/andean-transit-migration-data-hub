@@ -1,0 +1,18 @@
+occ_local_code,occ_local_label,occ_isco2,occ_isco2_label_es,isic1,crosswalk_confidence,note
+5211,Vendedor de puesto de mercado,52,Vendedores,G,exact,
+5212,Vendedor ambulante,52,Vendedores,G,exact,
+5120,Cocinero,51,Trabajadores de servicios personales,I,exact,
+5131,Mozo o mesero,51,Trabajadores de servicios personales,I,exact,
+9112,Limpieza en establecimientos,91,Limpiadores y asistentes,N,exact,
+9111,Trabajador del hogar,91,Limpiadores y asistentes,T,exact,Regimen especial en Peru (Ley del trabajador del hogar). Separado por seccion CIIU.
+9313,Peon de construccion,93,Peones de la mineria y la construccion,F,exact,
+7115,Carpintero,71,Oficiales y operarios de la construccion,F,exact,
+8322,Conductor de taxi o colectivo,83,Conductores de vehiculos,H,exact,
+8321,Mototaxista,83,Conductores de vehiculos,H,approximate,Bolivia no tiene una categoria local equivalente separada. Se agrupa en conductores.
+9333,Estibador o triciclero de carga,93,Peones de la mineria y la construccion,H,approximate,El triciclero de carga no tiene equivalente boliviano registrado.
+9211,Peon agricola,92,Peones agropecuarios,A,exact,
+7531,Confeccionista,75,Operarios de alimentos y textiles,C,exact,
+5230,Cajero,52,Vendedores,G,exact,
+5414,Agente de seguridad,54,Personal de proteccion,N,exact,
+9629,Segregador de residuos,96,Recolectores de desechos,OTH,approximate,
+6XXX,Cambista de frontera,52,Vendedores,G,contested,DISPUTADO. Ver nota simetrica en occupation_bo_isco.csv.

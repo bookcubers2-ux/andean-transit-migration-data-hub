@@ -1,0 +1,44 @@
+# Publica dashboard/ en GitHub Pages.
+# No hay paso de build porque el tablero no tiene paso de build: se sube
+# la carpeta tal cual, que es la misma que cabe en un USB.
+name: Publicar tablero
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      # La compuerta, del lado del tablero: k, redondeo y bandas de
+      # incertidumbre. Si falla, no se publica nada.
+      - run: node tools/smoke.mjs
+
+  publicar:
+    needs: verificar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dashboard
+      - id: deployment
+        uses: actions/deploy-pages@v4

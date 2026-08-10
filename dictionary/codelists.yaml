@@ -1,0 +1,133 @@
+# =====================================================================
+# ATMDH / OAMT  ·  LISTAS DE CODIGOS  ·  CODE LISTS
+# Cada entrada genera: la validacion en R, el dropdown del formulario,
+# la etiqueta ES/EN del tablero y la linea del codebook impreso.
+# =====================================================================
+
+country:
+  BOL: { es: "Bolivia", en: "Bolivia" }
+  PER: { es: "Peru", en: "Peru" }
+
+code_status:
+  verified:     { es: "Verificado contra catalogo oficial", en: "Verified against official catalogue" }
+  needs_review: { es: "Pendiente de verificacion", en: "Pending verification" }
+
+corridor_segment:
+  S1_PUNO:      { es: "Segmento 1. Altiplano peruano (Juliaca, Puno, Yunguyo, Desaguadero PE)", en: "Segment 1. Peruvian altiplano" }
+  S2_FRONTERA:  { es: "Segmento 2. Frontera del Titicaca (Desaguadero BO, Copacabana)", en: "Segment 2. Titicaca border" }
+  S3_TRONCAL:   { es: "Segmento 3. Eje troncal boliviano (El Alto, Oruro, Santa Cruz)", en: "Segment 3. Bolivian trunk axis" }
+  S4_SALIDAS:   { es: "Segmento 4. Salidas del corredor (Tacna, Pisiga, Villazon, Yacuiba)", en: "Segment 4. Corridor exits" }
+
+node_type:
+  border_post:      { es: "Puesto fronterizo", en: "Border post" }
+  terminal:         { es: "Terminal de buses", en: "Bus terminal" }
+  shelter:          { es: "Albergue o casa de acogida", en: "Shelter" }
+  municipal_office: { es: "Oficina municipal", en: "Municipal office" }
+  market:           { es: "Mercado o feria", en: "Market or fair" }
+  street_survey:    { es: "Encuesta en via publica", en: "Street survey" }
+
+direction:
+  inbound:  { es: "Entrada al municipio", en: "Inbound" }
+  outbound: { es: "Salida del municipio", en: "Outbound" }
+  internal: { es: "Movimiento interno", en: "Internal" }
+  unknown:  { es: "No determinado", en: "Not determined" }
+
+sex:
+  F:  { es: "Mujer", en: "Woman" }
+  M:  { es: "Hombre", en: "Man" }
+  X:  { es: "Otra / no binaria", en: "Other / non-binary" }
+  NR: { es: "Prefiere no responder", en: "Prefers not to answer" }
+
+# Rangos de 5 anios. La fecha exacta de nacimiento NUNCA se registra.
+age_band:
+  "00_04": { es: "0 a 4", en: "0 to 4" }
+  "05_09": { es: "5 a 9", en: "5 to 9" }
+  "10_14": { es: "10 a 14", en: "10 to 14" }
+  "15_19": { es: "15 a 19", en: "15 to 19" }
+  "20_24": { es: "20 a 24", en: "20 to 24" }
+  "25_29": { es: "25 a 29", en: "25 to 29" }
+  "30_34": { es: "30 a 34", en: "30 to 34" }
+  "35_39": { es: "35 a 39", en: "35 to 39" }
+  "40_44": { es: "40 a 44", en: "40 to 44" }
+  "45_49": { es: "45 a 49", en: "45 to 49" }
+  "50_54": { es: "50 a 54", en: "50 to 54" }
+  "55_59": { es: "55 a 59", en: "55 to 59" }
+  "60_64": { es: "60 a 64", en: "60 to 64" }
+  "65_up": { es: "65 o mas", en: "65 or over" }
+
+# La escalera canonica de 6 peldanios. El detalle legal local vive en
+# status_local_label y no se publica.
+status_ladder:
+  1: { code: undocumented,      es: "Sin documentacion migratoria", en: "Undocumented" }
+  2: { code: in_process,        es: "Tramite iniciado, sin resolucion", en: "Application filed, undecided" }
+  3: { code: transit_permit,    es: "Permiso de transito o permanencia transitoria", en: "Transit or transitory stay permit" }
+  4: { code: temporary_stay,    es: "Permanencia temporal", en: "Temporary stay" }
+  5: { code: work_authorised,   es: "Permanencia con autorizacion laboral", en: "Stay with work authorisation" }
+  6: { code: permanent,         es: "Permanencia indefinida o nacionalizacion", en: "Permanent stay or naturalisation" }
+
+enforcement_context:
+  routine:            { es: "Registro rutinario", en: "Routine record" }
+  operativo:          { es: "Operativo de control", en: "Enforcement operation" }
+  post_policy_change: { es: "Dentro de los 30 dias de un cambio normativo", en: "Within 30 days of a policy change" }
+  unknown:            { es: "No determinado", en: "Not determined" }
+
+formality:
+  formal_contract:      { es: "Contrato formal", en: "Formal contract" }
+  formal_selfemp:       { es: "Cuenta propia registrada", en: "Registered self-employment" }
+  informal_wage:        { es: "Trabajo asalariado informal", en: "Informal wage work" }
+  informal_own_account: { es: "Cuenta propia informal", en: "Informal own-account" }
+  unpaid:               { es: "Trabajo no remunerado", en: "Unpaid work" }
+  none:                 { es: "Sin actividad remunerada", en: "No paid activity" }
+
+hours_band:
+  "lt20":  { es: "Menos de 20 h/semana", en: "Under 20 h/week" }
+  "20_39": { es: "20 a 39 h/semana", en: "20 to 39 h/week" }
+  "40_48": { es: "40 a 48 h/semana", en: "40 to 48 h/week" }
+  "gt48":  { es: "Mas de 48 h/semana", en: "Over 48 h/week" }
+
+# Multiplos del salario minimo nacional. NUNCA montos absolutos, porque un
+# monto exacto en un municipio pequenio identifica al empleador.
+earnings_band_smn:
+  "lt050":  { es: "Menos de 0,5 SMN", en: "Under 0.5 NMW" }
+  "050_099":{ es: "0,5 a 0,99 SMN", en: "0.5 to 0.99 NMW" }
+  "100_149":{ es: "1,0 a 1,49 SMN", en: "1.0 to 1.49 NMW" }
+  "150_199":{ es: "1,5 a 1,99 SMN", en: "1.5 to 1.99 NMW" }
+  "ge200":  { es: "2 SMN o mas", en: "2 NMW or more" }
+  "NR":     { es: "No responde", en: "No answer" }
+
+job_search_channel:
+  family_network:  { es: "Red familiar o paisanos", en: "Family or countryfolk network" }
+  street_direct:   { es: "Busqueda directa en la calle", en: "Direct street search" }
+  employer_broker: { es: "Intermediario o enganchador", en: "Broker or recruiter" }
+  ngo_referral:    { es: "Derivacion de ONG o iglesia", en: "NGO or church referral" }
+  municipal_office:{ es: "Bolsa de empleo municipal", en: "Municipal job office" }
+  digital:         { es: "Grupo de WhatsApp o Facebook", en: "WhatsApp or Facebook group" }
+  other:           { es: "Otro", en: "Other" }
+
+# CIIU Rev.4, seccion (1 letra). Se listan solo las secciones observadas en
+# el corredor. El resto colapsa a OTH.
+isic1:
+  A: { es: "Agricultura y ganaderia", en: "Agriculture and livestock" }
+  C: { es: "Industria manufacturera", en: "Manufacturing" }
+  F: { es: "Construccion", en: "Construction" }
+  G: { es: "Comercio", en: "Trade" }
+  H: { es: "Transporte y almacenamiento", en: "Transport and storage" }
+  I: { es: "Alojamiento y comida", en: "Accommodation and food" }
+  N: { es: "Servicios administrativos y de apoyo", en: "Administrative and support services" }
+  T: { es: "Trabajo domestico en hogares", en: "Domestic work in households" }
+  OTH: { es: "Otras secciones", en: "Other sections" }
+
+crosswalk_confidence:
+  exact:       { es: "Equivalencia exacta", en: "Exact equivalence" }
+  approximate: { es: "Equivalencia aproximada", en: "Approximate equivalence" }
+  contested:   { es: "Equivalencia en disputa. Se marca en el tablero.", en: "Contested equivalence. Flagged in the dashboard." }
+
+consent_mode:
+  written:          { es: "Consentimiento escrito firmado", en: "Signed written consent" }
+  verbal_witnessed: { es: "Consentimiento verbal con testigo", en: "Verbal consent with witness" }
+
+source_kind:
+  admin_scrape:    { es: "Raspado de registro administrativo publico", en: "Public administrative record scrape" }
+  admin_transfer:  { es: "Transferencia formal de datos por convenio", en: "Formal data transfer under agreement" }
+  municipal_survey:{ es: "Encuesta municipal aplicada por tecnicos", en: "Municipal survey run by technicians" }
+  published_aggregate: { es: "Agregado ya publicado por la fuente", en: "Aggregate already published by the source" }

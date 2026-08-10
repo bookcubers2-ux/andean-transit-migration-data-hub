@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATMDH / OAMT · Hub de Datos de Migracion de Transito Andina</title>
+<meta name="description" content="Tablero de datos de migracion de transito en el corredor andino central. Bolivia y Peru, 12 nodos.">
+<link rel="stylesheet" href="styles.css">
+<!--
+  ===================================================================
+  Se abre desde una carpeta o desde un USB, sin servidor y sin internet.
+  Los datos llegan como .js y no como .json a proposito: bajo file://
+  Chrome y Edge bloquean fetch() de un archivo local, pero <script src>
+  siempre carga. Esa sola decision es lo que hace que este tablero
+  funcione en una oficina municipal sin conexion.
+  ===================================================================
+-->
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wordmark">
+    <b id="t-title">Hub de Datos de Migracion de Transito Andina</b>
+    <span id="t-sub">Corredor andino central · Bolivia y Peru · 12 nodos de transito</span>
+  </div>
+  <span class="chip" id="vintage">Cosecha</span>
+  <span class="chip" id="kchip">k = 10</span>
+  <span class="chip" title="tiempo de render de la vista actual"><span id="perf">—</span></span>
+  <div class="seg">
+    <button class="btn" id="lang" title="Espanol / English">EN</button>
+    <button class="btn" id="theme" title="Tema">◐</button>
+  </div>
+</header>
+
+<div class="synthetic" id="synthetic" hidden></div>
+
+<nav class="tabs" role="tablist">
+  <button class="tab" data-tab="corridor" role="tab" aria-selected="true">Corredor</button>
+  <button class="tab" data-tab="labour"   role="tab" aria-selected="false">Mercado laboral</button>
+  <button class="tab" data-tab="time"     role="tab" aria-selected="false">Serie temporal</button>
+  <button class="tab" data-tab="model"    role="tab" aria-selected="false">Modelo</button>
+  <button class="tab" data-tab="method"   role="tab" aria-selected="false">Metodologia</button>
+</nav>
+
+<main>
+  <section class="view" data-view="corridor" role="tabpanel"></section>
+  <section class="view" data-view="labour"   role="tabpanel" hidden></section>
+  <section class="view" data-view="time"     role="tabpanel" hidden></section>
+  <section class="view" data-view="model"    role="tabpanel" hidden></section>
+  <section class="view" data-view="method"   role="tabpanel" hidden></section>
+</main>
+
+<footer>
+  <p id="foot-k"></p>
+  <p id="foot-linkage"></p>
+  <p id="foot-scope"></p>
+</footer>
+
+<!-- paquete de datos L4, generado por R/09_export_dashboard.R -->
+<script src="data/manifest.js"></script>
+<script src="data/geo.js"></script>
+<script src="data/cubes.js"></script>
+<script src="data/forecast.js"></script>
+<script src="data/scorecard.js"></script>
+<script src="data/coverage.js"></script>
+
+<script src="i18n.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
