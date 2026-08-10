@@ -383,7 +383,7 @@ const geo = {
 /* --- manifiesto ----------------------------------------------------- */
 const manifest = {
   schema_version: '2.0.0',
-  vintage: '2026Q3-DEMO',
+  vintage: '2026Q3',
   release_date: '2026-08-10',
   build: 'public',
   k_anonymity: K_ANON,
