@@ -71,7 +71,7 @@ documentElement.lang = 'es';
 
 /* elementos que define index.html */
 const seed = (tag, attrs) => { const n = makeNode(tag); for (const k in attrs) n.setAttribute(k, attrs[k]); ROOT.appendChild(n); return n; };
-['t-title','t-sub','lang','vintage','kchip','perf','synthetic','theme','foot-k','foot-linkage','foot-scope']
+['t-title','t-sub','lang','vintage','kchip','perf','theme','foot-k','foot-linkage','foot-scope']
   .forEach(id => seed('div', { id }));
 ['corridor','labour','time','model','method'].forEach(t => {
   seed('button', { class: 'tab', 'data-tab': t });

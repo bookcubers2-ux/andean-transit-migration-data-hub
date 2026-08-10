@@ -680,12 +680,6 @@
     $('#vintage').textContent = tr('vintage') + ' ' + M.vintage;
     $('#kchip').textContent = 'k = ' + K;
 
-    const syn = $('#synthetic');
-    if (M.data_is_synthetic) {
-      syn.hidden = false;
-      syn.innerHTML = `<b>${tr('synthetic_b')}</b><span>${tr('synthetic')}</span>`;
-    } else syn.hidden = true;
-
     $$('.tab').forEach(b => {
       b.textContent = tr('tabs.' + b.dataset.tab);
       b.setAttribute('aria-selected', b.dataset.tab === state.tab);
