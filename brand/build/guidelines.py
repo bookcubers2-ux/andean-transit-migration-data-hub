@@ -139,6 +139,7 @@ html = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
       <li><span class="dot ring"></span><b>The ochre ring.</b> Desaguadero: one bridge, two municipalities, the only point where the corridor is literally a single place.</li>
       <li><span class="dot hollow"></span><b>The hollow cell.</b> A protected cell, one with fewer than ten people. It is drawn so the reader can see that it exists and cannot be shown. It is never drawn as zero and never left out.</li>
       <li><span class="dot" style="background:#0B1626;opacity:.55"></span><b>Twelve cells.</b> One for each node of the Hub, around a center that stays open.</li>
+      <li><span class="dot" style="background:#8E9BAE;border-radius:50%;width:10px;height:10px;margin-left:1px;margin-right:9px"></span><b>The open dot, top left.</b> A place held for the next country. It is not a node and it is not counted: it marks that the diamond can grow.</li>
     </ul>
   </div>
   <div class="rule"><b>The name of the symbol is “El Cruce”, the crossing.</b>It is the unit the Hub counts. The person who crosses is never the unit.</div>
@@ -280,8 +281,8 @@ html = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
   <div class="grid4" style="margin-top:6px;text-align:center;font-size:11px;color:#5A6577"><span>Do not fade it</span><span>Not on busy backgrounds</span><span>Do not squash it</span><span>Do not flatten the colors</span></div>
   <h3>Never</h3>
   <ul>
-    <li>Fill the hollow cell, or remove the ring. They carry the meaning.</li>
-    <li>Add cells, or arrange the twelve cells in a different shape.</li>
+    <li>Fill the hollow cell, or remove the ring or the open dot. They carry the meaning.</li>
+    <li>Add cells, or arrange the twelve cells in a different shape. The open dot is the only element reserved for growth: when a new country joins, it becomes a cell and this guide is reissued.</li>
     <li>Retype ATMDH in another typeface, change its tracking, or separate it from the symbol in the lockups.</li>
     <li>Place the logo inside a circle or a badge of another organization’s color.</li>
   </ul>

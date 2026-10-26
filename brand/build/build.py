@@ -82,10 +82,10 @@ HOLLOW = (3, 3)
 
 VARIANTS = {
     # nombre: (lado Peru, eje y lado Bolivia, anillo, texto1, texto2, texto3)
-    "color":      dict(peru=LAGO, bol=NOCHE, ring=OCRE, t1=NOCHE, t2=LAGO, t3=NIEBLA, bg=None),
-    "reversed":   dict(peru=LAGO_CLARO, bol=HIELO, ring=OCRE, t1=HIELO, t2="#7FCBD8", t3=NIEBLA_CLARA, bg=NOCHE),
-    "mono-dark":  dict(peru=NOCHE, bol=NOCHE, ring=NOCHE, t1=NOCHE, t2=NOCHE, t3=NOCHE, bg=None),
-    "mono-light": dict(peru=HIELO, bol=HIELO, ring=HIELO, t1=HIELO, t2=HIELO, t3=HIELO, bg=NOCHE),
+    "color":      dict(open="#8E9BAE", open_op=1.0, peru=LAGO, bol=NOCHE, ring=OCRE, t1=NOCHE, t2=LAGO, t3=NIEBLA, bg=None),
+    "reversed":   dict(open=HIELO, open_op=1.0, peru=LAGO_CLARO, bol=HIELO, ring=OCRE, t1=HIELO, t2="#7FCBD8", t3=NIEBLA_CLARA, bg=NOCHE),
+    "mono-dark":  dict(open=NOCHE, open_op=0.5, peru=NOCHE, bol=NOCHE, ring=NOCHE, t1=NOCHE, t2=NOCHE, t3=NOCHE, bg=None),
+    "mono-light": dict(open=HIELO, open_op=0.6, peru=HIELO, bol=HIELO, ring=HIELO, t1=HIELO, t2=HIELO, t3=HIELO, bg=NOCHE),
 }
 
 def mark_inner(v):
@@ -99,6 +99,8 @@ def mark_inner(v):
             g.append(f'<rect x="{x}" y="{y}" width="{S}" height="{S}" rx="{RAD}" fill="{col}"/>')
     cx = 2 * P + S / 2
     g.append(f'<circle cx="{cx}" cy="{cx}" r="21" fill="none" stroke="{v["ring"]}" stroke-width="9"/>')
+    # punto abierto: lugar reservado para el siguiente pais (esquina superior izquierda)
+    g.append(f'<circle cx="{S/2}" cy="{S/2}" r="11" fill="{v["open"]}" opacity="{v["open_op"]}"/>')
     return "".join(g)
 
 def wrap(w, h, body, bg=None, title="ATMDH / OAMT"):
