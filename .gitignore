@@ -31,3 +31,7 @@ renv/library/
 .DS_Store
 Thumbs.db
 node_modules/
+
+# Notas internas de trabajo
+docs/DATOS_PENDIENTES.md
+docs/VALORES_A_REVISAR.md

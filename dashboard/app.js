@@ -649,6 +649,101 @@
     host.appendChild(src);
   }
 
+
+  /* =====================================================================
+     VISTA E · CONTEXTO Y FUENTES
+     Cifras publicadas por terceros, calendario de eventos que movieron el
+     flujo, salarios minimos vigentes y lista de fuentes. Nada de esto es
+     dato personal: son agregados ya publicados por cada institucion.
+     ===================================================================== */
+  function renderContext(host) {
+    host.innerHTML = '';
+    const REF = D.reference || { events: [], minimum_wage: [], admin_flows: [], context: [], sources: [] };
+    const es = state.lang === 'es';
+    const esc = (x) => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+    const link = (u, t) => u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>` : esc(t);
+    const num = (v) => { const n = Number(v); return isFinite(n) ? n.toLocaleString(es ? 'es-BO' : 'en-US') : esc(v); };
+
+    // 1. indicadores de contexto
+    const k1 = mk('div', 'card');
+    k1.appendChild(mk('h2', null, es ? 'El corredor en cifras publicadas' : 'The corridor in published figures'));
+    k1.appendChild(mk('p', 'sub', es ? 'Agregados publicados por ACNUR, OIM, PDI de Chile, Migraciones, INEI, INE y BCB.'
+                                      : 'Aggregates published by UNHCR, IOM, Chile PDI, Migraciones, INEI, INE and BCB.'));
+    const tiles = mk('div', 'tiles');
+    tiles.style.gridTemplateColumns = 'repeat(auto-fit,minmax(190px,1fr))';
+    tiles.innerHTML = REF.context.map(c => `
+      <div class="tile"><div class="label">${esc(es ? c.label_es : c.label_en)}</div>
+        <div class="value">${num(c.value)}</div>
+        <div class="note">${esc(es ? c.unit_es : c.unit_en)} · ${esc(c.period)} · ${link(c.source_url, c.source)}</div></div>`).join('');
+    k1.appendChild(tiles);
+    host.appendChild(k1);
+
+    // 2. flujo administrativo por puesto
+    const k2 = mk('div', 'card'); k2.style.marginTop = '1rem';
+    k2.appendChild(mk('h2', null, es ? 'Flujo administrativo por puesto de control' : 'Administrative flow by control post'));
+    k2.appendChild(mk('p', 'sub', es ? 'Llegadas de extranjeros (INE Bolivia, enero a septiembre) y movimientos migratorios trimestrales (INEI). Series agregadas de la fuente, separadas de los eventos del Hub.'
+                                      : 'Foreign arrivals (INE Bolivia, January to September) and quarterly migration movements (INEI). Source aggregates, kept separate from Hub events.'));
+    k2.appendChild(mk('div', null, `<div style="overflow-x:auto"><table class="dv"><thead><tr>
+      <th>${es ? 'Puesto' : 'Post'}</th><th>${es ? 'Nodo' : 'Node'}</th><th>${es ? 'Periodo' : 'Period'}</th><th>${es ? 'Valor' : 'Value'}</th><th>${es ? 'Fuente' : 'Source'}</th></tr></thead><tbody>
+      ${REF.admin_flows.map(r => `<tr><td>${esc(r.post)}</td><td>${esc((munById[r.mun_id] || {}).mun_name_short || r.mun_id)}</td>
+        <td>${esc(r.period)}</td><td>${num(r.value)} ${esc(r.unit)}</td><td>${link(r.source_url, r.source)}</td></tr>`).join('')}
+      </tbody></table></div>`));
+    host.appendChild(k2);
+
+    // 3. calendario de eventos
+    const k3 = mk('div', 'card'); k3.style.marginTop = '1rem';
+    k3.appendChild(mk('h2', null, es ? 'Calendario de control, cierres y cambios normativos (2021 a 2026)' : 'Enforcement, closures and policy-change calendar (2021 to 2026)'));
+    k3.appendChild(mk('p', 'sub', es ? 'Cada evento entra al modelo como covariable de intensidad de control o como choque de flujo. Separa la deteccion del flujo real.'
+                                      : 'Each event enters the model as an enforcement-intensity covariate or as a flow shock. It separates detection from actual flow.'));
+    const TYPE = es
+      ? { operativo:'Operativo', cierre_frontera:'Cierre o reapertura', ventana_regularizacion:'Regularizacion', estado_emergencia:'Estado de emergencia', bloqueo_via:'Bloqueo', cambio_normativo:'Cambio normativo' }
+      : { operativo:'Operation', cierre_frontera:'Closure or reopening', ventana_regularizacion:'Regularisation', estado_emergencia:'State of emergency', bloqueo_via:'Road blockade', cambio_normativo:'Policy change' };
+    const names = (ids) => ids === 'ALL' ? (es ? 'Todo el pais' : 'Whole country')
+      : String(ids).split(' ').map(i => (munById[i] || {}).mun_name_short || i).join(', ');
+    const ev = [...REF.events].sort((a, b) => String(a.date_start).localeCompare(String(b.date_start)));
+    k3.appendChild(mk('div', null, `<div style="overflow-x:auto;max-height:520px;overflow-y:auto"><table class="dv"><thead><tr>
+      <th>${es ? 'Desde' : 'From'}</th><th>${es ? 'Hasta' : 'To'}</th><th>${es ? 'Pais' : 'Country'}</th><th>${es ? 'Tipo' : 'Type'}</th><th>${es ? 'Nodos' : 'Nodes'}</th><th style="text-align:left">${es ? 'Descripcion' : 'Description'}</th></tr></thead><tbody>
+      ${ev.map(e => `<tr><td>${esc(e.date_start)}</td><td>${esc(e.date_end)}</td><td>${esc(e.country)}</td>
+        <td>${esc(TYPE[e.type] || e.type)}</td><td>${esc(names(e.mun_ids))}</td>
+        <td style="text-align:left;white-space:normal;min-width:280px">${e.source_url ? link(e.source_url, e.description_es) : esc(e.description_es)}</td></tr>`).join('')}
+      </tbody></table></div>`));
+    host.appendChild(k3);
+
+    // 4. salarios minimos
+    const k4 = mk('div', 'card'); k4.style.marginTop = '1rem';
+    k4.appendChild(mk('h2', null, es ? 'Salario minimo vigente por periodo' : 'Minimum wage in force by period'));
+    k4.appendChild(mk('p', 'sub', es ? 'Base de las bandas de ingreso: cada ingreso se registra en multiplos del salario minimo de su pais, nunca como monto.'
+                                      : 'Basis of the earnings bands: income is recorded as multiples of the national minimum wage, never as an amount.'));
+    k4.appendChild(mk('div', null, `<div style="overflow-x:auto"><table class="dv"><thead><tr>
+      <th>${es ? 'Pais' : 'Country'}</th><th>${es ? 'Desde' : 'From'}</th><th>${es ? 'Hasta' : 'To'}</th><th>${es ? 'Monto' : 'Amount'}</th><th>${es ? 'Norma' : 'Norm'}</th></tr></thead><tbody>
+      ${REF.minimum_wage.map(w => `<tr><td>${esc(w.country_iso3)}</td><td>${esc(w.valid_from)}</td><td>${esc(w.valid_to || (es ? 'vigente' : 'in force'))}</td>
+        <td>${num(w.amount)} ${esc(w.currency)}</td><td>${link(w.source_url, w.norm)}</td></tr>`).join('')}
+      </tbody></table></div>`));
+    host.appendChild(k4);
+
+    // 5. poblacion base
+    const k5 = mk('div', 'card'); k5.style.marginTop = '1rem';
+    k5.appendChild(mk('h2', null, es ? 'Poblacion base de los 13 municipios' : 'Baseline population of the 13 municipalities'));
+    k5.appendChild(mk('div', null, `<div style="overflow-x:auto"><table class="dv"><thead><tr>
+      <th>${es ? 'Municipio' : 'Municipality'}</th><th>${es ? 'Codigo' : 'Code'}</th><th>${es ? 'Poblacion' : 'Population'}</th><th>${es ? 'Anio' : 'Year'}</th><th style="text-align:left">${es ? 'Fuente' : 'Source'}</th></tr></thead><tbody>
+      ${MUN.map(m => `<tr><td>${esc(m.mun_name)}</td><td><code>${esc(m.national_code)}</code></td><td>${num(m.pop_baseline)}</td>
+        <td>${esc(m.pop_year || '')}</td><td style="text-align:left">${esc(m.pop_source || '')}</td></tr>`).join('')}
+      </tbody></table></div>`));
+    host.appendChild(k5);
+
+    // 6. fuentes
+    const k6 = mk('div', 'card'); k6.style.marginTop = '1rem';
+    k6.appendChild(mk('h2', null, tr('sources')));
+    const groups = [...new Set(REF.sources.map(s => s.group))];
+    const GL = es ? { Flujo:'Flujo y movilidad', Territorio:'Territorio y poblacion', Normas:'Normas' }
+                  : { Flujo:'Flow and mobility', Territorio:'Territory and population', Normas:'Legal norms' };
+    const pr = mk('div', 'prose');
+    pr.innerHTML = groups.map(g => `<h3>${esc(GL[g] || g)}</h3><ul>` + REF.sources.filter(s => s.group === g).map(s =>
+      `<li>${link(s.url, s.name)} <span style="color:var(--ink-3)">· ${esc(s.publisher)} · ${esc(es ? s.use_es : s.use_en)}</span></li>`).join('') + '</ul>').join('');
+    k6.appendChild(pr);
+    host.appendChild(k6);
+  }
+
   /* =====================================================================
      armazon
      ===================================================================== */
@@ -667,7 +762,7 @@
   }
 
   const VIEWS = { corridor: renderCorridor, labour: renderLabour, time: renderTime,
-                  model: renderModel, method: renderMethod };
+                  model: renderModel, context: renderContext, method: renderMethod };
 
   function render() {
     T = window.I18N[state.lang];
@@ -715,6 +810,8 @@
   }
   $$('.tab').forEach(b => b.addEventListener('click', () => { state.tab = b.dataset.tab; render(); }));
 
+  const h = (typeof location !== 'undefined' && location.hash || '').slice(1);
+  if (VIEWS[h]) state.tab = h;
   applyTheme();
   render();
 })();

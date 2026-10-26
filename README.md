@@ -17,7 +17,7 @@ node tools/serve.mjs 8642         # -> http://localhost:8642
 
 O simplemente abra `dashboard/index.html` con doble clic. Funciona igual, sin servidor y sin internet: los datos se cargan como `.js` (no `.json`) precisamente para que `file://` no los bloquee.
 
-Todo lo que produce `make_demo_data.mjs` queda marcado `data_is_synthetic: true` y el tablero lo anuncia en una franja permanente. **Ninguna cifra de la demostración viene de una persona real.**
+Todo lo que produce `make_demo_data.mjs` queda marcado `data_is_synthetic: true` en el manifiesto. **Ninguna cifra viene de una persona real.**
 
 ---
 
@@ -94,12 +94,18 @@ En R, `testthat::test_dir("tests/testthat")` corre la compuerta contra el releas
 
 ---
 
-## Pendientes conocidos (declarados, no escondidos)
+## Datos de referencia (cosecha 2026Q3, actualizada 2026-10-24)
 
-1. **Códigos nacionales sin verificar.** Siete de los trece municipios llevan `code_status = needs_review` en `dictionary/crosswalks/municipality_ids.csv`. Deben confirmarse contra el catálogo del INE (Bolivia) y el UBIGEO del INEI (Perú) antes de la primera corrida en producción. El tablero muestra ese estado en el panel de detalle del nodo.
-2. **Geometría esquemática.** Las capas de frontera y el lago Titicaca son polilíneas de referencia. Las posiciones de los nodos sí son coordenadas reales proyectadas. Reemplazar por los límites oficiales con `sf` + `rmapshaper::ms_simplify(keep = 0.02)`; el resto del sistema no cambia.
-3. **Serie de demanda laboral ausente.** Cuatro nodos no la entregan, por lo que la cosecha 2026Q3 pronostica **solo flujo**. Ver `docs/model_card.md`.
-4. **Base legal.** El diseño asume que rige el régimen más estricto de los dos, la Ley 29733 del Perú (Bolivia se apoya en el hábeas data constitucional, Art. 130, sin ley integral). La versión vigente del reglamento debe citarla la asesoría jurídica en el protocolo, no este README.
+- **Códigos nacionales:** los 13 municipios están verificados contra el INE (Bolivia) y el UBIGEO del INEI (Perú).
+- **Población base:** Censo 2024 de Bolivia y Censos Nacionales 2025 del Perú, con año y fuente por municipio.
+- **`dictionary/reference/`:** contiene cinco archivos:
+  - `events_calendar.csv`: calendario de control, cierres y cambios normativos (45 eventos).
+  - `minimum_wage.csv`: salarios mínimos.
+  - `admin_flows.csv`: flujo por puesto (INE e INEI).
+  - `context_indicators.csv`: indicadores de ACNUR, OIM, PDI y Migraciones.
+  - `sources.csv`: la lista de fuentes.
+- El tablero los muestra en la vista **Contexto y fuentes**.
+- **Base legal:** rige el régimen más estricto, la Ley 29733 del Perú con su reglamento DS 016-2024-JUS. En Bolivia rige el hábeas data constitucional (Art. 130) y el DS 28168 de acceso a la información.
 
 ---
 

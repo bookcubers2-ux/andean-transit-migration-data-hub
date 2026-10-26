@@ -1,0 +1,27 @@
+mun_id,post,country_of_post,indicator,period,value,unit,source,source_url
+BO-020804,Desaguadero,BOL,llegadas_extranjeros,2019 ene-sep,200771,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-020804,Desaguadero,BOL,llegadas_extranjeros,2023 ene-sep,86161,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-020804,Desaguadero,BOL,llegadas_extranjeros,2024 ene-sep,211310,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-020804,Desaguadero CEBAF,BOL,llegadas_extranjeros,2023 ene-sep,10245,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-020804,Desaguadero CEBAF,BOL,llegadas_extranjeros,2024 ene-sep,27590,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-021701,Kasani / Copacabana,BOL,llegadas_extranjeros,2019 ene-sep,74425,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-021701,Kasani / Copacabana,BOL,llegadas_extranjeros,2023 ene-sep,27330,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-021701,Kasani / Copacabana,BOL,llegadas_extranjeros,2024 ene-sep,17605,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-040901,Pisiga,BOL,llegadas_extranjeros,2019 ene-sep,23757,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-040901,Pisiga,BOL,llegadas_extranjeros,2023 ene-sep,17117,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-040901,Pisiga,BOL,llegadas_extranjeros,2024 ene-sep,17182,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-051501,La Quiaca / Villazon,BOL,llegadas_extranjeros,2019 ene-sep,166327,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-051501,La Quiaca / Villazon,BOL,llegadas_extranjeros,2023 ene-sep,185491,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-051501,La Quiaca / Villazon,BOL,llegadas_extranjeros,2024 ene-sep,40938,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-060301,Resguardo 2 / Yacuiba,BOL,llegadas_extranjeros,2019 ene-sep,34937,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-060301,Resguardo 2 / Yacuiba,BOL,llegadas_extranjeros,2023 ene-sep,20205,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-060301,Resguardo 2 / Yacuiba,BOL,llegadas_extranjeros,2024 ene-sep,35487,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-020105,Aeropuerto El Alto,BOL,llegadas_extranjeros,2019 ene-sep,86802,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-020105,Aeropuerto El Alto,BOL,llegadas_extranjeros,2023 ene-sep,39992,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-020105,Aeropuerto El Alto,BOL,llegadas_extranjeros,2024 ene-sep,64185,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-070101,Aeropuerto Viru Viru,BOL,llegadas_extranjeros,2019 ene-sep,198443,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-070101,Aeropuerto Viru Viru,BOL,llegadas_extranjeros,2023 ene-sep,190865,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+BO-070101,Aeropuerto Viru Viru,BOL,llegadas_extranjeros,2024 ene-sep,202450,personas,INE Bolivia,https://anda.ine.gob.bo/index.php/catalog/200
+PE-210402,Oficinas de Puno (CEBAF y PCF Desaguadero; Kasani; Carancas; Tilali; Tinicachi; AI Juliaca),PER,movimientos_migratorios,2026 T1,356335,movimientos,INEI con datos de Migraciones,https://www.inei.gob.pe/media/MenuRecursivo/boletines/boletin-migraciones-i-trimestre-2026.pdf
+PE-230101,Oficinas de Tacna (JZ Tacna; PCF Santa Rosa; PCF Tripartito),PER,movimientos_migratorios,2026 T1,1354441,movimientos,INEI con datos de Migraciones,https://www.inei.gob.pe/media/MenuRecursivo/boletines/boletin-migraciones-i-trimestre-2026.pdf
+PE-230101,Oficinas de Tacna (JZ Tacna; PCF Santa Rosa; PCF Tripartito),PER,movimientos_migratorios,2026 T2,1059593,movimientos,INEI con datos de Migraciones,https://www.inei.gob.pe/media/MenuRecursivo/boletines/boletin-migraciones-iit26.pdf

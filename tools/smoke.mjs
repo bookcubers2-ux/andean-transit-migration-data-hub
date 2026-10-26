@@ -73,7 +73,7 @@ documentElement.lang = 'es';
 const seed = (tag, attrs) => { const n = makeNode(tag); for (const k in attrs) n.setAttribute(k, attrs[k]); ROOT.appendChild(n); return n; };
 ['t-title','t-sub','lang','vintage','kchip','perf','theme','foot-k','foot-linkage','foot-scope']
   .forEach(id => seed('div', { id }));
-['corridor','labour','time','model','method'].forEach(t => {
+['corridor','labour','time','model','context','method'].forEach(t => {
   seed('button', { class: 'tab', 'data-tab': t });
   seed('section', { class: 'view', 'data-view': t });
 });
@@ -107,7 +107,7 @@ const load = f => {
 };
 
 ['data/manifest.js','data/geo.js','data/cubes.js','data/forecast.js','data/scorecard.js',
- 'data/coverage.js','i18n.js','charts.js'].forEach(load);
+ 'data/coverage.js','data/reference.js','i18n.js','charts.js'].forEach(load);
 
 /* app.js se ejecuta solo al cargar; se captura su render inicial */
 load('app.js');

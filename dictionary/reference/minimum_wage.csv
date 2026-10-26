@@ -1,0 +1,10 @@
+country_iso3,valid_from,valid_to,amount,currency,norm,source_url
+BOL,2022-01-01,2022-12-31,2250,BOB,DS 4711 (1-may-2022),https://www.lexivox.org/norms/BO-DS-N4711.html
+BOL,2023-01-01,2023-12-31,2362,BOB,DS 4928 (1-may-2023),https://www.lexivox.org/norms/BO-DS-N4928.html
+BOL,2024-01-01,2024-12-31,2500,BOB,DS 5154 (1-may-2024),https://www.lexivox.org/norms/BO-DS-N5154.html
+BOL,2025-01-01,2025-12-31,2750,BOB,DS 5383 (1-may-2025),https://www.lexivox.org/norms/BO-DS-N5383.html
+BOL,2026-01-01,,3300,BOB,DS 5516 (13-ene-2026),https://boliviaimpuestos.com/decreto-supremo-5516-pdf/
+PER,2018-04-01,2022-04-30,930,PEN,DS 004-2018-TR,https://busquedas.elperuano.pe/dispositivo/NL/1629081-2
+PER,2022-05-01,2024-12-31,1025,PEN,DS 003-2022-TR,https://busquedas.elperuano.pe/dispositivo/NL/2054921-1/
+PER,2025-01-01,2026-09-30,1130,PEN,DS 006-2024-TR,https://busquedas.elperuano.pe/dispositivo/NL/2357884-10
+PER,2026-10-01,,1230,PEN,DS 015-2026-TR (28-sep-2026),https://busquedas.elperuano.pe/dispositivo/EX/2559163-1

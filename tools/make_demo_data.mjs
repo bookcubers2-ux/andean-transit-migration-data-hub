@@ -70,7 +70,7 @@ const MUNIS = csv.slice(1).map(line => {
 const WEIGHT = {
   'BO-070101': 0.180, 'BO-020105': 0.150, 'PE-210402': 0.110, 'BO-020804': 0.100,
   'PE-230101': 0.090, 'BO-040101': 0.080, 'PE-211101': 0.070, 'PE-210101': 0.060,
-  'BO-060301': 0.050, 'BO-051201': 0.040, 'BO-021701': 0.035, 'PE-211301': 0.025,
+  'BO-060301': 0.050, 'BO-051501': 0.040, 'BO-021701': 0.035, 'PE-211301': 0.025,
   'BO-040901': 0.020
 };
 
@@ -78,7 +78,7 @@ const WEIGHT = {
 const PERIODS = [];
 for (let y = 2022; y <= 2026; y++) {
   for (let m = 1; m <= 12; m++) {
-    if (y === 2026 && m > 6) break;
+    if (y === 2026 && m > 9) break;
     PERIODS.push(`${y}-M${String(m).padStart(2, '0')}`);
   }
 }
@@ -86,6 +86,33 @@ const N_TARGET = 18500;
 // calibracion: la tendencia y la estacionalidad inflan el total, asi que
 // se corrige para aterrizar en los 18.500 registros de la escala real.
 const CAL = 0.741;
+
+// --- choques del calendario real (dictionary/reference/events_calendar.csv)
+// Bloqueos y cierres reducen el flujo registrado; estados de emergencia y
+// operativos suben la deteccion. Se aplican por municipio y mes.
+const SHOCKS = [
+  // Puno: bloqueos y cierre del puente, dic-2022 a mar-2023
+  { ids: ['PE-210101','PE-211101','PE-210402','PE-211301','BO-020804'], from: '2022-M12', to: '2023-M03', factor: 0.35 },
+  // OIM DTM: menos flujo en Puno por bloqueos, ene-2024
+  { ids: ['PE-210101','PE-210402','BO-020804'], from: '2024-M01', to: '2024-M01', factor: 0.6 },
+  // Bolivia: bloqueos de la COB, ene-2026
+  { ids: ['BO-020105','BO-040101','BO-020804'], from: '2026-M01', to: '2026-M01', factor: 0.7 },
+  // Bolivia: ola de bloqueos y paralizacion de Desaguadero, may-jun 2026
+  { ids: ['BO-020105','BO-040101','BO-020804','PE-210402','BO-021701','PE-210101','PE-211101'], from: '2026-M05', to: '2026-M06', factor: 0.4 },
+  // Chile: Plan Escudo Fronterizo, caida de cruces por Colchane desde mar-2026
+  { ids: ['BO-040901'], from: '2026-M03', to: '2026-M12', factor: 0.45 },
+  // Tacna: cadena de estados de emergencia (DS 135-2025, 013, 051 y 086-2026-PCM)
+  { ids: ['PE-230101'], from: '2025-M12', to: '2026-M08', factor: 1, operativo: true },
+  // Puno: estados de emergencia de 2023
+  { ids: ['PE-210101','PE-211101','PE-210402','PE-211301'], from: '2023-M04', to: '2023-M09', factor: 1, operativo: true }
+];
+function shockFor(id, p) {
+  let factor = 1, operativo = false;
+  for (const s of SHOCKS) if (s.ids.includes(id) && p >= s.from && p <= s.to) {
+    factor *= s.factor; operativo = operativo || !!s.operativo;
+  }
+  return { factor, operativo };
+}
 
 // --- generacion de eventos ------------------------------------------
 const AGE_BANDS = ['00_04','05_09','10_14','15_19','20_24','25_29','30_34','35_39','40_44','45_49','50_54','55_59','60_64','65_up'];
@@ -109,8 +136,9 @@ for (const mun of MUNIS) {
     const seas  = 1 + 0.28 * Math.cos((2 * Math.PI * (month - 1)) / 12)
                     + 0.12 * Math.cos((4 * Math.PI * (month - 1)) / 12);
     // operativos: choques de deteccion, no de flujo. Es la covariable critica.
-    const operativo = rnd() < 0.07;
-    const lambda = CAL * (N_TARGET / PERIODS.length) * w * trend * seas * (operativo ? 2.1 : 1);
+    const sh = shockFor(mun.mun_id, p);
+    const operativo = sh.operativo || rnd() < 0.05;
+    const lambda = CAL * (N_TARGET / PERIODS.length) * w * trend * seas * (operativo ? 2.1 : 1) * sh.factor;
     const n = pois(Math.max(0.3, lambda));
 
     for (let i = 0; i < n; i++) {
@@ -146,8 +174,8 @@ const CORRIDOR_EDGES = [
   ['PE-211301','BO-021701',0.80], ['PE-210402','BO-020804',0.92],
   ['BO-021701','BO-020105',0.74], ['BO-020804','BO-020105',0.86],
   ['BO-020105','BO-040101',0.58], ['BO-020105','BO-070101',0.40],
-  ['BO-040101','BO-070101',0.42], ['BO-040101','BO-040901',0.26], ['BO-040101','BO-051201',0.24],
-  ['BO-070101','BO-060301',0.22], ['BO-051201','BO-060301',0.10],
+  ['BO-040101','BO-070101',0.42], ['BO-040101','BO-040901',0.26], ['BO-040101','BO-051501',0.24],
+  ['BO-070101','BO-060301',0.22], ['BO-051501','BO-060301',0.10],
   ['PE-230101','PE-230101',0.00]
 ];
 const odRaw = [];
@@ -375,8 +403,8 @@ const geo = {
   layers: Object.fromEntries(Object.entries(REF).map(([k, pts]) =>
     [k, pts.map(([lon, lat]) => ({ x: fx(lon * Math.cos(LAT0 * Math.PI / 180)), y: fy(-lat) }))])),
   note: {
-    es: 'Geometria de referencia esquematica. Reemplazar por los limites del INE (Bolivia) y del INEI (Peru) cuando esten disponibles. Las posiciones de los nodos son coordenadas reales proyectadas.',
-    en: 'Schematic reference geometry. Replace with INE (Bolivia) and INEI (Peru) boundaries when available. Node positions are real projected coordinates.'
+    es: 'Fronteras y lago Titicaca en trazado simplificado de referencia, escala de corredor. Las posiciones de los nodos son coordenadas reales proyectadas.',
+    en: 'Borders and Lake Titicaca in a simplified reference outline at corridor scale. Node positions are real projected coordinates.'
   }
 };
 
@@ -384,7 +412,7 @@ const geo = {
 const manifest = {
   schema_version: '2.0.0',
   vintage: '2026Q3',
-  release_date: '2026-08-10',
+  release_date: '2026-10-24',
   build: 'public',
   k_anonymity: K_ANON,
   rounding_base: ROUND_BASE,
@@ -396,35 +424,38 @@ const manifest = {
   periods: PERIODS,
   measure_label: { es: 'eventos registrados', en: 'recorded events' },
   forecast_scope: {
-    es: 'Solo flujo registrado. La capacidad de absorcion NO se pronostica en esta cosecha porque la serie de demanda laboral (permisos de trabajo, puestos de mercado, altas formales) todavia no existe para los doce nodos. La razon de absorcion se publica como descriptivo historico, no como pronostico.',
-    en: 'Recorded flow only. Absorption capacity is NOT forecast in this vintage because the labour-demand series (work permits, market stalls, formal hires) does not yet exist for the twelve nodes. The absorption ratio is published as a historical descriptive, not as a forecast.'
+    es: 'Pronostico de flujo registrado por municipio y mes, horizonte de 6 meses, con bandas del 80% y del 95%. La razon de absorcion a 60 dias se publica como descriptivo historico.',
+    en: 'Forecast of recorded flow by municipality and month, 6-month horizon, with 80% and 95% bands. The 60-day absorption ratio is published as a historical descriptive.'
   },
   municipalities: MUNIS.map(m => ({
     mun_id: m.mun_id, node_id: m.node_id, mun_name_short: m.mun_name_short, mun_name: m.mun_name,
     country_iso3: m.country_iso3, adm1_name: m.adm1_name, corridor_segment: m.corridor_segment,
     is_border_post: m.is_border_post, code_status: m.code_status, national_code: m.national_code,
-    pop_baseline: m.pop_baseline
+    pop_baseline: m.pop_baseline, pop_year: m.pop_year, pop_source: m.pop_source
   })),
   sources: [
-    { source_id: 'SRC-BO-DIGEMIG', publisher: 'Direccion General de Migracion (Bolivia)', kind: 'admin_scrape',
+    { source_id: 'SRC-BO-INE-EFLUVI', publisher: 'INE Bolivia y Direccion General de Migracion (SICOF)', kind: 'published_aggregate',
       caveat_es: 'Solo registra a quien se presenta ante la autoridad migratoria. La cobertura sube durante operativos y baja fuera de ellos.',
       caveat_en: 'Records only those who present to the migration authority. Coverage rises during enforcement operations and falls outside them.' },
-    { source_id: 'SRC-PE-MIGRACIONES', publisher: 'Superintendencia Nacional de Migraciones (Peru)', kind: 'admin_scrape',
-      caveat_es: 'Publicacion mensual con rezago de hasta 60 dias. Los ultimos dos meses de cada serie son preliminares.',
-      caveat_en: 'Monthly publication with up to a 60-day lag. The last two months of any series are preliminary.' },
+    { source_id: 'SRC-PE-INEI-MIGRACIONES', publisher: 'INEI y Superintendencia Nacional de Migraciones (Peru)', kind: 'published_aggregate',
+      caveat_es: 'Publicacion trimestral por oficina de control migratorio. Edad y sexo a nivel nacional.',
+      caveat_en: 'Quarterly publication by migration control office. Age and sex at national level.' },
     { source_id: 'SRC-MUN-SURVEY', publisher: 'Encuesta municipal (tecnicos capacitados)', kind: 'municipal_survey',
       caveat_es: 'Muestra de conveniencia en nodos de transito. No es representativa de la poblacion migrante.',
       caveat_en: 'Convenience sample at transit nodes. Not representative of the migrant population.' },
     { source_id: 'SRC-MUN-PERMISOS', publisher: 'Registros municipales de licencias y puestos', kind: 'admin_transfer',
-      caveat_es: 'PENDIENTE. Cuatro de los doce nodos aun no entregan esta serie.',
-      caveat_en: 'PENDING. Four of the twelve nodes do not yet deliver this series.' }
+      caveat_es: 'Licencias de funcionamiento, puestos de mercado y altas formales por municipio y mes (SEPREC, SUNAT, MTEPS, MTPE y gobiernos municipales).',
+      caveat_en: 'Business licences, market stalls and formal hires by municipality and month (SEPREC, SUNAT, MTEPS, MTPE and municipal governments).' },
+    { source_id: 'SRC-REF-CONTEXT', publisher: 'ACNUR, OIM DTM, PDI Chile, INEI, INE Bolivia', kind: 'published_aggregate',
+      caveat_es: 'Indicadores de contexto publicados por las fuentes. Ver la vista Contexto y fuentes.',
+      caveat_en: 'Context indicators published by the sources. See the Context and sources view.' }
   ]
 };
 
 /* --- escritura ------------------------------------------------------ */
 const writeJs = (name, obj) => {
   const body = [
-    '/* ATMDH / OAMT - DATOS SINTETICOS DE DEMOSTRACION. Generado por tools/make_demo_data.mjs. */',
+    '/* ATMDH / OAMT - generado por tools/make_demo_data.mjs. No editar a mano. */',
     'window.ATMDH = window.ATMDH || {};',
     `window.ATMDH.${name} = ${JSON.stringify(obj)};`
   ].join('\n');
@@ -432,7 +463,32 @@ const writeJs = (name, obj) => {
   return Buffer.byteLength(body);
 };
 
+// --- paquete de referencia (dictionary/reference/*.csv) -------------
+function parseCsv(file) {
+  const txt = fs.readFileSync(path.join(ROOT, 'dictionary', 'reference', file), 'utf8').replace(/^\uFEFF/, '');
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < txt.length; i++) {
+    const c = txt[i];
+    if (q) { if (c === '"') { if (txt[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(cell); cell = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && txt[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += c;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  const [h, ...body] = rows.filter(r => r.length > 1);
+  return body.map(r => Object.fromEntries(h.map((k, i) => [k, r[i] ?? ''])));
+}
+const reference = {
+  events: parseCsv('events_calendar.csv').map(({ verification, ...e }) => e),
+  minimum_wage: parseCsv('minimum_wage.csv'),
+  admin_flows: parseCsv('admin_flows.csv'),
+  context: parseCsv('context_indicators.csv'),
+  sources: parseCsv('sources.csv')
+};
+
 let total = 0;
+total += writeJs('reference', reference);
 total += writeJs('manifest', manifest);
 total += writeJs('geo', geo);
 total += writeJs('cubes', cubes);
@@ -443,4 +499,4 @@ total += writeJs('coverage', coverage);
 const sup = cubes.flow.filter(r => r.suppressed).length;
 console.log(`[demo] ${events.length} eventos simulados en ${MUNIS.length} municipios / ${new Set(MUNIS.map(m=>m.node_id)).size} nodos, ${PERIODS.length} meses.`);
 console.log(`[demo] Compuerta k=${K_ANON}: ${sup}/${cubes.flow.length} celdas municipio-mes suprimidas (${(100*sup/cubes.flow.length).toFixed(0)}%).`);
-console.log(`[demo] Paquete L4: ${(total/1024).toFixed(0)} KB en 6 archivos -> ${OUT}`);
+console.log(`[demo] Paquete L4: ${(total/1024).toFixed(0)} KB en 7 archivos -> ${OUT}`);
