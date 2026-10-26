@@ -94,6 +94,10 @@ En R, `testthat::test_dir("tests/testthat")` corre la compuerta contra el releas
 
 ---
 
+## Identidad visual
+
+El símbolo "El Cruce": doce celdas en rombo escalonado, una por nodo; el anillo ocre es Desaguadero y la celda hueca es la celda protegida (n<10). Paleta: Noche `#0B1626`, Hielo `#F3F0E8`, Lago `#0F6B78`, Ocre `#E3A02B`. Tipografía: Bahnschrift. Guía de uso: https://bookcubers2-ux.github.io/andean-transit-migration-data-hub/brand/ . Kit completo (SVG, PNG y PDF) en `brand/`; el generador está en `brand/build/` (`python -I build.py`).
+
 ## Datos de referencia (cosecha 2026Q3, actualizada 2026-10-24)
 
 - **Códigos nacionales:** los 13 municipios están verificados contra el INE (Bolivia) y el UBIGEO del INEI (Perú).
