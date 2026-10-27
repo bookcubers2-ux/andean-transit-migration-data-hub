@@ -30,7 +30,7 @@
   const K = M.k_anonymity;
 
   const state = {
-    lang: localStorage.getItem('atmdh.lang') || 'es',
+    lang: (typeof location !== 'undefined' && /[?&]lang=(en|es)/.exec(location.search) || [])[1] || localStorage.getItem('atmdh.lang') || 'es',
     theme: localStorage.getItem('atmdh.theme') || 'system',
     tab: 'corridor',
     mun: 'BO-070101',

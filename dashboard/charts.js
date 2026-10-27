@@ -73,7 +73,8 @@
     if (!(max > 0)) return [0, 1];
     const raw = max / n, mag = Math.pow(10, Math.floor(Math.log10(raw)));
     const step = [1, 2, 2.5, 5, 10].find(s => s * mag >= raw) * mag;
-    const out = []; for (let v = 0; v <= max + step * 0.001; v += step) out.push(v);
+    // el ultimo marcador siempre cubre el maximo: nada queda fuera del eje
+    const out = []; for (let v = 0; ; v += step) { out.push(v); if (v >= max - step * 0.001) break; }
     return out;
   };
 
@@ -187,6 +188,7 @@
     const xs = opt.x;                             // etiquetas de periodo
     const series = opt.series;                    // [{key,label,color,values:[]}]
     const allV = series.flatMap(s => s.values).filter(v => v !== null && v !== undefined);
+    (opt.bands || []).forEach(b => b.values.forEach(v => { if (v) allV.push(v[0], v[1]); }));
     const max = Math.max(1, ...allV);
     const ticks = DV.niceTicks(max, 4);
     const yMax = ticks[ticks.length - 1];
