@@ -41,7 +41,7 @@ test_that("ningun cubo publicado supera el tope de dos ejes", {
   for (nm in names(cubes)) {
     cu <- cubes[[nm]]
     if (!is.data.frame(cu)) next
-    axes <- setdiff(names(cu), c(reserved, "mun_id", "obs_period"))
+    axes <- setdiff(names(cu), c(reserved, "mun_id", "obs_period", "yr"))  # yr es eje temporal, como obs_period
     expect_lte(length(axes), MAX_AXES,
       label = sprintf("Cubo '%s' con ejes: %s", nm, paste(axes, collapse = ", ")))
   }

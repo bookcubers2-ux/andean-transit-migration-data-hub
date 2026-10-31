@@ -17,3 +17,4 @@ occ_local_code,occ_local_label,occ_isco2,occ_isco2_label_es,isic1,crosswalk_conf
 5414,Vigilante o guardia,54,Personal de proteccion,N,exact,
 9629,Reciclador,96,Recolectores de desechos,OTH,approximate,Frecuentemente sin registro. Subrepresentado.
 6XXX,Cambista de moneda en frontera,52,Vendedores,G,contested,DISPUTADO. Bolivia lo registra como comercio y Peru como servicio financiero informal. Las celdas construidas sobre este mapeo se marcan.
+7112,Albanil,71,Oficiales y operarios de la construccion,F,exact,

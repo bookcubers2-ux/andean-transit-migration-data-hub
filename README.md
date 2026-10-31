@@ -4,29 +4,32 @@ Corredor andino central · Bolivia y Perú · 12 nodos de tránsito · 13 munici
 
 ### ▶ Tablero en vivo: **https://bookcubers2-ux.github.io/andean-transit-migration-data-hub/**
 
-> Los datos publicados en ese enlace son **sintéticos**, generados para poder mostrar el sistema completo antes de cargar los datos reales. El tablero lo declara en una franja permanente. **Ningún dato personal de ninguna persona migrante está publicado en internet, ni lo estará:** el pipeline de R corre en una máquina local, las capas L0 a L2 están excluidas del repositorio por `.gitignore`, y lo único que cruza la frontera de exportación son celdas agregadas que pasaron la compuerta k=10.
+> Los datos publicados en ese enlace son la **primera cosecha con registros reales**: 412 cuestionarios con consentimiento informado (versión v0.9-), recogidos por voluntarios del Hub entre marzo y septiembre de 2026 en Santa Cruz, Cochabamba, La Paz y El Alto. **Ningún dato personal de ninguna persona migrante está publicado en internet, ni lo estará:** el pipeline de R corre en una máquina local, los cuestionarios viven en `_ENTREGAS/` (excluida del repositorio), y lo único que cruza la frontera de exportación son celdas agregadas que pasaron la compuerta k=10. El 90% de las celdas municipio-mes están suprimidas: así de pequeña es la muestra, y así se dice.
 
 ---
 
 ## Ver el tablero ahora mismo
 
 ```bash
-node tools/make_demo_data.mjs     # genera un release L4 SINTÉTICO
-node tools/serve.mjs 8642         # -> http://localhost:8642
+node tools/serve.mjs 8642         # -> http://localhost:8642  (release real ya incluido en dashboard/data)
+node tools/make_demo_data.mjs     # SOLO para pruebas: sobrescribe el release con datos sinteticos
 ```
 
 O simplemente abra `dashboard/index.html` con doble clic. Funciona igual, sin servidor y sin internet: los datos se cargan como `.js` (no `.json`) precisamente para que `file://` no los bloquee.
 
-Todo lo que produce `make_demo_data.mjs` queda marcado `data_is_synthetic: true` en el manifiesto. **Ninguna cifra viene de una persona real.**
+Si corre `make_demo_data.mjs`, el paquete queda marcado `data_is_synthetic: true` y hay que volver a correr `R/11_run_real.R` antes de publicar.
 
 ---
 
 ## La corrida real
 
 ```r
-Sys.setenv(ATMDH_VINTAGE = "2026Q3", ATMDH_RELEASE_DATE = "2026-09-30")
-source("run_all.R")
+Sys.setenv(ATMDH_VINTAGE = "2026Q3", ATMDH_RELEASE_DATE = "2026-10-31",
+           ATMDH_SURVEY_DIR = "_ENTREGAS/2026-11_registros_412")
+source("R/11_run_real.R")   # encuesta -> L2 -> cubos -> compuerta -> dashboard/data
 ```
+
+`run_all.R` sigue siendo la corrida completa con fuentes administrativas; `11_run_real.R` es la cosecha de solo encuesta.
 
 En Windows: doble clic en `make.bat`.
 

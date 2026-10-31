@@ -89,9 +89,9 @@ hours_band:
 # monto exacto en un municipio pequenio identifica al empleador.
 earnings_band_smn:
   "lt050":  { es: "Menos de 0,5 SMN", en: "Under 0.5 NMW" }
-  "050_099":{ es: "0,5 a 0,99 SMN", en: "0.5 to 0.99 NMW" }
-  "100_149":{ es: "1,0 a 1,49 SMN", en: "1.0 to 1.49 NMW" }
-  "150_199":{ es: "1,5 a 1,99 SMN", en: "1.5 to 1.99 NMW" }
+  "050_099": { es: "0,5 a 0,99 SMN", en: "0.5 to 0.99 NMW" }
+  "100_149": { es: "1,0 a 1,49 SMN", en: "1.0 to 1.49 NMW" }
+  "150_199": { es: "1,5 a 1,99 SMN", en: "1.5 to 1.99 NMW" }
   "ge200":  { es: "2 SMN o mas", en: "2 NMW or more" }
   "NR":     { es: "No responde", en: "No answer" }
 
@@ -100,7 +100,7 @@ job_search_channel:
   street_direct:   { es: "Busqueda directa en la calle", en: "Direct street search" }
   employer_broker: { es: "Intermediario o enganchador", en: "Broker or recruiter" }
   ngo_referral:    { es: "Derivacion de ONG o iglesia", en: "NGO or church referral" }
-  municipal_office:{ es: "Bolsa de empleo municipal", en: "Municipal job office" }
+  municipal_office: { es: "Bolsa de empleo municipal", en: "Municipal job office" }
   digital:         { es: "Grupo de WhatsApp o Facebook", en: "WhatsApp or Facebook group" }
   other:           { es: "Otro", en: "Other" }
 
@@ -129,5 +129,5 @@ consent_mode:
 source_kind:
   admin_scrape:    { es: "Raspado de registro administrativo publico", en: "Public administrative record scrape" }
   admin_transfer:  { es: "Transferencia formal de datos por convenio", en: "Formal data transfer under agreement" }
-  municipal_survey:{ es: "Encuesta municipal aplicada por tecnicos", en: "Municipal survey run by technicians" }
+  municipal_survey: { es: "Encuesta municipal aplicada por tecnicos", en: "Municipal survey run by technicians" }
   published_aggregate: { es: "Agregado ya publicado por la fuente", en: "Aggregate already published by the source" }

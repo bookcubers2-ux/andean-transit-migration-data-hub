@@ -10,7 +10,7 @@
 window.I18N = {
   es: {
     title: 'Hub de Datos de Migracion de Transito Andina',
-    subtitle: 'Corredor andino central · Bolivia y Peru · 12 nodos de transito',
+    subtitle: 'Corredor andino central · Bolivia y Peru · 14 nodos de transito',
     lang: 'EN',
     tabs: { corridor: 'Corredor', labour: 'Mercado laboral', time: 'Serie temporal', model: 'Modelo', context: 'Contexto y fuentes', method: 'Metodologia' },
 
@@ -50,7 +50,7 @@ window.I18N = {
 
     ts_title: 'Eventos registrados por mes',
     ts_sub: 'La linea gris es la referencia ingenua estacional. Todo modelo debe ganarle, y aqui se ve cuando no lo hace.',
-    ts_small_title: 'Los 12 nodos, mismo eje temporal',
+    ts_small_title: 'Los 14 nodos, mismo eje temporal',
     ts_small_sub: 'Escala vertical libre en cada panel; el maximo va rotulado. Santa Cruz y Pisiga no comparten orden de magnitud.',
     series_actual: 'Registrado', series_naive: 'Referencia ingenua', series_forecast: 'Pronostico',
 
@@ -83,7 +83,7 @@ window.I18N = {
 
   en: {
     title: 'Andean Transit Migration Data Hub',
-    subtitle: 'Central Andean corridor · Bolivia and Peru · 12 transit nodes',
+    subtitle: 'Central Andean corridor · Bolivia and Peru · 14 transit nodes',
     lang: 'ES',
     tabs: { corridor: 'Corridor', labour: 'Labour market', time: 'Time series', model: 'Model', context: 'Context and sources', method: 'Methodology' },
 
@@ -123,7 +123,7 @@ window.I18N = {
 
     ts_title: 'Recorded events per month',
     ts_sub: 'The grey line is the seasonal-naive benchmark. Any model must beat it, and here you can see when it does not.',
-    ts_small_title: 'The 12 nodes, shared time axis',
+    ts_small_title: 'The 14 nodes, shared time axis',
     ts_small_sub: 'Free vertical scale per panel; each maximum is labelled. Santa Cruz and Pisiga are not the same order of magnitude.',
     series_actual: 'Recorded', series_naive: 'Naive benchmark', series_forecast: 'Forecast',
 

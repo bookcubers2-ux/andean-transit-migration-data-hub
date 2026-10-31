@@ -39,3 +39,6 @@ docs/VALORES_A_REVISAR.md
 # Brand build temp
 brand/build/__pycache__/
 brand/dist/_r.html
+
+# Datos entregados (nunca se suben)
+_ENTREGAS/

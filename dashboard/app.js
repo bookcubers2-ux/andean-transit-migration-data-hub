@@ -540,12 +540,19 @@
     sc.style.marginTop = '1rem';
     sc.appendChild(mk('h2', null, tr('scorecard_title')));
     sc.appendChild(mk('p', 'sub', tr('scorecard_sub') + ' ' + tr('is_naive') + '.'));
+    if (D.scorecard.every(r => r.MASE === null || r.MASE === undefined)) sc.appendChild(mk('p', 'sub', M.forecast_scope[state.lang]));
     const wrap = mk('div', 'scroll-x');
     const t = mk('table', 'dv');
     t.innerHTML = `<tr><th>${tr('municipality')}</th><th>${tr('level')}</th><th>${tr('mase')}</th>
       <th>${tr('rmsse')}</th><th>${tr('cov80')}</th><th style="text-align:left">${state.lang === 'es' ? 'Calibracion' : 'Calibration'}</th></tr>` +
       D.scorecard.sort((a, b) => b.mean_level - a.mean_level).map(r => {
         const c = r.coverage80;
+        if (r.MASE === null || r.MASE === undefined) {
+          // serie demasiado corta para la retrospectiva: se dice, no se inventa
+          const note = r[state.lang === 'es' ? 'note_es' : 'note_en'] || (state.lang === 'es' ? 'Sin calibracion todavia' : 'No calibration yet');
+          return `<tr><td>${munById[r.mun_id].mun_name_short}</td><td>${DV.fmt(r.mean_level)}</td>
+            <td>—</td><td>—</td><td>—</td><td style="text-align:left;white-space:normal"><span class="status warning">${note}</span></td></tr>`;
+        }
         const cls = c >= 0.72 && c <= 0.92 ? 'good' : (c >= 0.55 ? 'warning' : 'critical');
         const txt_ = cls === 'good' ? tr('cal_good') : (cls === 'warning' ? tr('cal_warn') : tr('cal_bad'));
         return `<tr><td>${munById[r.mun_id].mun_name_short}</td><td>${DV.fmt(r.mean_level)}</td>
